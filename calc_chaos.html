@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CALC_CHAOS_v2.0.EXE</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Comic Sans MS', cursive; /* Peak annoyance */
+        }
+
+        .calc-wrapper {
+            background: #222;
+            padding: 20px;
+            border: 6px outset #444;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+            width: 320px;
+            transition: transform 0.1s ease;
+            position: relative;
+        }
+
+        #screen {
+            background: #8fa372;
+            color: #1a1d15;
+            height: 70px;
+            margin-bottom: 20px;
+            text-align: right;
+            padding: 15px;
+            font-size: 22px;
+            border: 5px inset #555;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            transition: background 0.2s;
+        }
+
+        /* The Red "Roast" Flash */
+        .roast-active {
+            background: #ff0000 !important;
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            height: 55px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #3a3a3a;
+            color: #fff;
+            border: 3px outset #666;
+            cursor: pointer;
+        }
+
+        button:active {
+            border-style: inset;
+            background: #555;
+        }
+
+        button:hover {
+            background: #444;
+            border-color: #ff00ff;
+        }
+
+        #equal-btn {
+            background: #c60;
+            grid-column: span 2;
+        }
+
+        .clear-btn {
+            background: #900;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            50% { transform: translate(1px, 2px) rotate(-1deg); }
+            100% { transform: translate(1px, 1px) rotate(0deg); }
+        }
+
+        .shaking {
+            animation: shake 0.15s infinite;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calc-wrapper" id="main-frame">
+    <div id="screen">READY...</div>
+    <div class="buttons">
+        <button onclick="add(7)">7</button><button onclick="add(8)">8</button><button onclick="add(9)">9</button><button onclick="add('/')">÷</button>
+        <button onclick="add(4)">4</button><button onclick="add(5)">5</button><button onclick="add(6)">6</button><button onclick="add('*')">×</button>
+        <button onclick="add(1)">1</button><button onclick="add(2)">2</button><button onclick="add(3)">3</button><button onclick="add('-')">-</button>
+        <button onclick="add(0)">0</button><button class="clear-btn" onclick="unreliableClear()">C</button><button id="equal-btn" onclick="solve()">=</button>
+        <button onclick="add('+')" style="grid-column: span 4;">+</button>
+    </div>
+</div>
+
+<script>
+    let currentInput = "";
+    const screen = document.getElementById('screen');
+    const frame = document.getElementById('main-frame');
+    const eqBtn = document.getElementById('equal-btn');
+
+    function add(val) {
+        // Fat Finger: 15% chance to type a random number
+        if (typeof val === 'number' && Math.random() > 0.85) {
+            val = Math.floor(Math.random() * 10);
+        }
+        
+        currentInput += val;
+        screen.innerText = currentInput;
+
+        // Move the calculator slightly on every click
+        frame.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px) rotate(${Math.random()*4-2}deg)`;
+    }
+
+    function solve() {
+        if (!currentInput) {
+            triggerRoast("DO SOMETHING.");
+            return;
+        }
+
+        try {
+            let result = eval(currentInput);
+            const original = currentInput;
+
+            // --- THE ROAST ENGINE ---
+            if (original === "2+2" || original === "2*2") {
+                triggerRoast("REALLY? 4. GO TO SCHOOL.");
+            } 
+            else if (result === 0) {
+                triggerRoast("ZERO. LIKE YOUR IQ.");
+            }
+            else if (original.length < 4) {
+                triggerRoast("TOO EASY. TRY HARDER.");
+            }
+            else {
+                // The Chaos Tax (Adds random decimals)
+                result = result + (Math.random() * 0.1337);
+                screen.innerText = result.toFixed(4);
+            }
+            
+            currentInput = ""; // Force them to start over after every answer
+
+        } catch(e) {
+            triggerRoast("LEARN MATH.");
+            currentInput = "";
+        }
+    }
+
+    function triggerRoast(msg) {
+        screen.innerText = msg;
+        screen.classList.add('roast-active');
+        frame.classList.add('shaking');
+        
+        setTimeout(() => {
+            screen.classList.remove('roast-active');
+            frame.classList.remove('shaking');
+            if(screen.innerText === msg) screen.innerText = "0";
+        }, 2000);
+    }
+
+    function unreliableClear() {
+        const chance = Math.random();
+
+        if (chance > 0.8) {
+            // Success (20%)
+            currentInput = "";
+            screen.innerText = "0";
+            alert("System: Fine, I'll clear it this once.");
+        } 
+        else if (chance > 0.5) {
+            // Fake Success (30%)
+            screen.innerText = "0";
+            alert("Memory Wipe Successful*");
+            // Note: currentInput is NOT actually cleared here.
+        }
+        else if (chance > 0.2) {
+            // Insult (30%)
+            const insults = ["NO", "MAKE ME", "LOCKED", "PAY $5", "NAH"];
+            triggerRoast(insults[Math.floor(Math.random() * insults.length)]);
+        }
+        else {
+            // Double the trouble (20%)
+            currentInput += currentInput;
+            screen.innerText = "DUPLICATING DATA...";
+            setTimeout(() => { screen.innerText = currentInput; }, 600);
+        }
+    }
+
+    // The Evasive Equal Button
+    eqBtn.addEventListener('mouseenter', () => {
+        if (Math.random() > 0.5) {
+            const x = Math.random() * 100 - 50;
+            const y = Math.random() * 100 - 50;
+            frame.style.transform = `translate(${x}px, ${y}px) scale(0.9)`;
+        }
+    });
+</script>
+
+</body>
+</html>
