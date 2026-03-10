@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ultimate Annoyance 3000</title>
+<style>
+  /* The CSS (Visual Chaos) */
+  body {
+    background: repeating-linear-gradient(45deg,pink, white 10px, pink 10px,white 20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .panel {
+    background: #c0c0c0;
+    border: 4px outset #fff;
+    padding: 20px;
+    width: 350px;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    box-shadow: 10px 10px 0px black;
+    cursor: wait; /* Makes it look busy/frozen */
+  }
+
+  h2 { font-size: 18px; text-transform: uppercase; color: blue; }
+
+  .control-group { margin-bottom: 25px; border: 1px dashed red; padding: 5px; }
+
+  /* The "Fighting" Button */
+  .toggle-btn {
+    background: #000080;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    transition: 0.1s;
+  }
+
+  .toggle-btn:hover {
+    transform: scale(0.5) rotate(15deg); /* Shrinks when you try to click */
+    background: red;
+    content: "CANT CLICK ME";
+  }
+
+  /* The Glitchy Slider */
+  input[type=range] {
+    width: 100%;
+    cursor: help;
+  }
+
+  input[type=range]:active {
+    animation: jitter 0.1s infinite;
+  }
+
+  @keyframes jitter {
+    0% { transform: translate(2px, 2px); }
+    50% { transform: translate(-2px, -2px); }
+    100% { transform: translate(2px, -2px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <h2>S0und C0ntr0l v1.0</h2>
+  <div class="control-group">
+    <label>M4STER V0LUM3</label>
+    <input type="range" min="0" max="100" value="50">
+  </div>
+
+  <div class="control-group">
+    <button class="toggle-btn">ENABLE SILENCE (OFF)</button>
+  </div>
+  
+  <p style="font-size: 8px;">*By moving this slider, you agree to 400 years of terms and conditions.</p>
+</div>
+<script>
+  const slider = document.querySelector('input[type="range"]');
+  const btn = document.querySelector('.toggle-btn');
+  const panel = document.querySelector('.panel');
+
+  // 1. The "Resistant" Slider: It fights back when you move it.
+  slider.addEventListener('input', () => {
+    // Randomly resets the volume to 0 or 100 while you try to slide it
+    if (Math.random() > 0.8) {
+      slider.value = Math.random() > 0.5 ? 0 : 100;
+      alert("UNAUTHORIZED VOLUME CHANGE DETECTED");
+    }
+  });
+
+  // 2. The "Teleporting" Button: Moves the whole panel when you hover
+  btn.addEventListener('mouseover', () => {
+    const x = Math.random() * (window.innerWidth - 350);
+    const y = Math.random() * (window.innerHeight - 200);
+    panel.style.position = 'absolute';
+    panel.style.left = x + 'px';
+    panel.style.top = y + 'px';
+  });
+
+  // 3. Fake "Loading" Loops
+  btn.addEventListener('click', () => {
+    btn.innerText = "Applying changes... 0%";
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 1;
+      btn.innerText = `Applying changes... ${progress}%`;
+      if (progress === 99) {
+        clearInterval(interval);
+        btn.innerText = "ERROR: UPDATE FAILED (RETRYING)";
+        setTimeout(() => { btn.innerText = "ENABLE SILENCE (OFF)"; }, 2000);
+      }
+    }, 100);
+  });
+</script>
+
+</body>
+</html>
